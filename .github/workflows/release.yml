@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  # Required for both npm provenance signing AND OIDC-based Trusted Publishing
+  # auth. Omitting this breaks the publish step in ways that don't obviously
+  # point back to this permission block — see references/trusted-publishing.md.
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify tag matches package.json version
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          pkg_version="$(node -p "require('./package.json').version")"
+          if [ "$tag_version" != "$pkg_version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version $pkg_version" >&2
+            exit 1
+          fi
+
+      # Trusted Publishing / OIDC needs a recent npm CLI — don't rely on
+      # whatever actions/setup-node happens to pin.
+      - run: npm install -g npm@latest
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+      # Deliberately no NODE_AUTH_TOKEN env var here. Setting one — even a
+      # valid automation token — forces npm into token-auth mode instead of
+      # attempting OIDC, and npm now requires an OTP for token-based publishes
+      # (EOTP). Its absence is what makes OIDC/Trusted Publishing kick in, and
+      # OIDC only works if a Trusted Publisher is configured for this exact
+      # repo + workflow filename on npmjs.com (see SKILL.md step 6 — this
+      # can't be configured until the package's first, manual publish exists).
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+
+      - name: Create GitHub release
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
