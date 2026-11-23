@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-23
+
 ### Added
 
 - Signal's colors for light and dark (`colors`), the code panel's text colors (`panelText`), type families (`fonts`), easings, named motion durations and corner radii.

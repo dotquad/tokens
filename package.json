@@ -1,6 +1,6 @@
 {
   "name": "@dotquad/tokens",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Signal, Dotquad's design tokens for its browser, VS Code and Raycast extensions: colors for light and dark, type, motion and radii, as JavaScript and CSS custom properties, plus Dotquad's icons.",
   "license": "SEE LICENSE IN LICENSE",
   "author": "BinaryNoir Studios",
