@@ -1,0 +1,74 @@
+{
+  "name": "@dotquad/tokens",
+  "version": "0.0.0",
+  "description": "Signal, Dotquad's design tokens: colors for light and dark, type, motion, radii and the signal-node icons, as JavaScript and as CSS custom properties.",
+  "license": "MIT",
+  "author": "BinaryNoir Studios",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dotquad/tokens.git"
+  },
+  "homepage": "https://github.com/dotquad/tokens#readme",
+  "bugs": {
+    "url": "https://github.com/dotquad/tokens/issues"
+  },
+  "keywords": [
+    "dotquad",
+    "design-tokens",
+    "css-variables",
+    "icons",
+    "signal"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./tokens.css": "./dist/tokens.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/build-css.js",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build",
+    "release": "node scripts/release.js",
+    "release:patch": "node scripts/release.js patch",
+    "release:minor": "node scripts/release.js minor",
+    "release:major": "node scripts/release.js major"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.8",
+    "tsup": "^9.0.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^5.0.1"
+  }
+}
